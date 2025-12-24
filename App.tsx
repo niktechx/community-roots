@@ -1,7 +1,6 @@
-
 import React, { useState, useEffect } from 'react';
 import { Person } from './types';
-import { getFullName } from './mockData';
+import { getFullName, INITIAL_PEOPLE } from './mockData';
 import { TreeView } from './components/TreeView';
 import { AddPersonForm } from './components/AddPersonForm';
 import { KinshipCalculator } from './components/KinshipCalculator';
@@ -9,8 +8,8 @@ import { Icons } from './constants';
 import { db } from './services/databaseService';
 
 const App: React.FC = () => {
-  const [people, setPeople] = useState<Person[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [people, setPeople] = useState<Person[]>(INITIAL_PEOPLE);
+  const [isLoading, setIsLoading] = useState(false);
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
   const [editingPerson, setEditingPerson] = useState<Person | null>(null);
   const [connectionContext, setConnectionContext] = useState<Person | null>(null);
@@ -20,9 +19,16 @@ const App: React.FC = () => {
   // Initial Load from Shared Source
   useEffect(() => {
     const init = async () => {
-      const data = await db.loadLineage();
-      setPeople(data);
-      setIsLoading(false);
+      try {
+        const data = await db.loadLineage();
+        if (data && data.length > 0) {
+          setPeople(data);
+        }
+      } catch (e) {
+        console.error('Failed to load lineage, using initial data', e);
+      } finally {
+        setIsLoading(false);
+      }
     };
     init();
   }, []);
@@ -81,15 +87,6 @@ const App: React.FC = () => {
     setSelectedPerson(null);
     setActiveTab('add');
   };
-
-  if (isLoading) return (
-    <div className="h-screen w-screen flex items-center justify-center bg-slate-50">
-      <div className="flex flex-col items-center gap-4">
-        <div className="w-12 h-12 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin" />
-        <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Connecting to Lineage...</p>
-      </div>
-    </div>
-  );
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-[#fcfdfe] text-slate-900 overflow-hidden font-sans">
