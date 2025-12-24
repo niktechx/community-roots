@@ -1,0 +1,7 @@
+{
+  "name": "CommunityRoots",
+  "description": "A crowdsourced community lineage application with intelligent entity resolution, interactive tree visualization, and Indian kinship calculation.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
