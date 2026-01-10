@@ -40,6 +40,10 @@
 </head>
 <body class="bg-slate-50 text-slate-900">
     <div id="root"></div>
-    <script type="module" src="./index.tsx"></script>
+    <script type="module">
+      import('./index.tsx').catch(err => {
+        console.error('Failed to load app:', err);
+      });
+    </script>
 </body>
 </html>
