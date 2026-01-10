@@ -10,6 +10,21 @@
     <style>
         body { font-family: 'Inter', sans-serif; }
     </style>
+      <script>
+    // Shim for process.env to prevent "process is not defined" errors in browser
+    if (typeof process === 'undefined') {
+      window.process = { env: { API_KEY: '' } };
+    }
+    
+    // Global error listener for debugging initialization errors
+    window.addEventListener('error', (event) => {
+      console.error('Global error caught:', event.error);
+    });
+    
+    window.addEventListener('unhandledrejection', (event) => {
+      console.error('Unhandled promise rejection:', event.reason);
+    });
+  </script>
 <script type="importmap">
 {
   "imports": {
